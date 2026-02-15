@@ -1,4 +1,9 @@
-from app.main import _seconds_to_hms, _aggregate_segments
+from app.main import _seconds_to_hms, _aggregate_segments, transcript_example
+from fastapi.testclient import TestClient
+from app.main import app
+
+
+client = TestClient(app)
 
 
 def test_seconds_to_hms_basic():
@@ -34,3 +39,19 @@ def test_aggregate_segments_grouping_and_formatting():
     assert "alpha" in out[0]["text"] and "gamma" in out[0]["text"]
 
     assert out[1]["start"] == "00:00:12"
+
+
+def test_transcript_example_response():
+    """Test that /api/v1/transcript_example returns the expected response structure with total_duration_seconds."""
+    response = client.get("/api/v1/transcript_example")
+    assert response.status_code == 200
+    data = response.json()
+    
+    assert "video_id" in data
+    assert "segments" in data
+    assert "total_duration" in data
+    assert "total_duration_seconds" in data
+    assert data["video_id"] == "example"
+    assert len(data["segments"]) == 2
+    assert data["total_duration"] == "00:00:14"
+    assert data["total_duration_seconds"] == 14.0

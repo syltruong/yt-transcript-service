@@ -16,6 +16,7 @@ class TranscriptResponse(BaseModel):
     video_id: str
     segments: List[Segment]
     total_duration: str
+    total_duration_seconds: float
 
 
 def _seconds_to_hms(seconds: float) -> str:
@@ -108,7 +109,7 @@ def transcript_example():
         total_secs = max((s.get("start", 0.0) + float(s.get("duration", 0.0))) for s in raw_segments)
     total_duration = _seconds_to_hms(total_secs)
     segments = _aggregate_segments(raw_segments, min_duration=10.0)
-    return {"video_id": "example", "segments": segments, "total_duration": total_duration}
+    return {"video_id": "example", "segments": segments, "total_duration": total_duration, "total_duration_seconds": total_secs}
 
 
 @app.get("/api/v1/transcript", response_model=TranscriptResponse)
@@ -149,7 +150,7 @@ def get_transcript(
         except Exception as e:
             raise HTTPException(status_code=404, detail=f"Transcript not available for video ID {video_id}: {e}")
 
-    return {"video_id": video_id, "segments": segments, "total_duration": total_duration}
+    return {"video_id": video_id, "segments": segments, "total_duration": total_duration, "total_duration_seconds": total_secs}
 
 
 if __name__ == "__main__":
