@@ -9,7 +9,6 @@ from pathlib import Path
 
 class Segment(BaseModel):
     start: str
-    duration: float
     text: str
 
 
@@ -47,7 +46,6 @@ def _aggregate_segments(raw_segments: List[dict], min_duration: float = 10.0) ->
         aggregated.append(
             {
                 "start": _seconds_to_hms(cur_start),
-                "duration": round(cur_duration, 2),
                 "text": " ".join(t for t in texts if t),
             }
         )

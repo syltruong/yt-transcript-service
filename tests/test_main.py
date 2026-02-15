@@ -31,8 +31,6 @@ def test_aggregate_segments_grouping_and_formatting():
     # Expect two groups: first aggregates first three (3+4+5=12), second contains the last (2)
     assert len(out) == 2
     assert out[0]["start"] == "00:00:00"
-    assert out[0]["duration"] == 12.0
     assert "alpha" in out[0]["text"] and "gamma" in out[0]["text"]
 
     assert out[1]["start"] == "00:00:12"
-    assert out[1]["duration"] == 2.0
